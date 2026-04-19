@@ -1,6 +1,6 @@
-# SKILL.md — OurWhiteList (OWL)
+# SKILL.md — OurAirwaves (OA)
 
-Skills for working in the OurWhiteList repo.
+Skills for working in the OurAirwaves repo.
 
 ---
 

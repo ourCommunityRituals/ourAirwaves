@@ -1,14 +1,14 @@
-# CLAUDE.md — OurWhiteList (OWL)
+# CLAUDE.md — OurAirwaves (OA)
 
-> **Session protocol**: Read this file → Read OCR-docs `docs/VISION.md` → Understand OWL's role in the OCR product line → Execute the task.
+> **Session protocol**: Read this file → Read OCR-docs `docs/VISION.md` → Understand OA's role in the OCR product line → Execute the task.
 
 ---
 
 ## What this repo is
 
-OurWhiteList is the deployment and white label layer for OurCommunityRituals. Client workspace fork template. Onboarding runbook. Per-client environment schema.
+OurAirwaves is the deployment and white label layer for OurCommunityRituals. Client workspace fork template. Onboarding runbook. Per-client environment schema.
 
-When a new corridor or client needs their own instance of the OCR platform, OWL is how it gets deployed.
+When a new corridor or client needs their own instance of the OCR platform, OA is how it gets deployed.
 
 This repo is currently documentation-as-code. Deployment templates and runbooks will be added as the white label model is defined.
 
@@ -18,8 +18,8 @@ This repo is currently documentation-as-code. Deployment templates and runbooks 
 
 | Field | Value |
 |-------|-------|
-| Code | OWL |
-| Full name | OurWhiteList |
+| Code | OA |
+| Full name | OurAirwaves |
 | Type | Deployment and white label |
 | Data model | Client environment schemas, fork templates |
 | Dependencies | OSE (platform source), OSM (franchise knowledge) |
@@ -27,7 +27,7 @@ This repo is currently documentation-as-code. Deployment templates and runbooks 
 
 ---
 
-## What OWL owns
+## What OA owns
 
 - Client workspace fork template
 - Onboarding runbook for new deployments
@@ -36,7 +36,7 @@ This repo is currently documentation-as-code. Deployment templates and runbooks 
 - Client isolation and data separation
 - Environment provisioning (staging, production per client)
 
-## What OWL does NOT own
+## What OA does NOT own
 
 - Platform application code (OSE)
 - Franchise knowledge and documentation (OSM)
@@ -49,15 +49,15 @@ This repo is currently documentation-as-code. Deployment templates and runbooks 
 
 ## Key distinction
 
-OWL deploys. OSM documents. OWL sets up the client environment, provisions infrastructure, and manages the fork. OSM provides the knowledge of what to do once it's running.
+OA deploys. OSM documents. OA sets up the client environment, provisions infrastructure, and manages the fork. OSM provides the knowledge of what to do once it's running.
 
 ---
 
 ## White label tiers (from OW/OSE)
 
-| Tier | Scope | OWL responsibility |
+| Tier | Scope | OA responsibility |
 |------|-------|-------------------|
-| Free | Default global flags | No OWL involvement — standard platform |
+| Free | Default global flags | No OA involvement — standard platform |
 | Mid | Global overrides, self-serve config | Client environment setup, config management |
 | Enterprise | Event-level overrides, full control | Full fork, custom domain, branded deployment |
 
@@ -65,10 +65,10 @@ OWL deploys. OSM documents. OWL sets up the client environment, provisions infra
 
 ## Architectural boundaries
 
-- **OSE is the source.** OWL forks and deploys OSE, does not modify the core platform.
+- **OSE is the source.** OA forks and deploys OSE, does not modify the core platform.
 - **Client data isolation is non-negotiable.** Each client deployment has its own data boundary.
-- **OSM provides the runbook content.** OWL executes the deployment; OSM provides the operational knowledge.
-- **White label branding lives at the deployment layer.** Custom domains, colors, logos — OWL manages these per client.
+- **OSM provides the runbook content.** OA executes the deployment; OSM provides the operational knowledge.
+- **White label branding lives at the deployment layer.** Custom domains, colors, logos — OA manages these per client.
 
 ---
 
@@ -92,7 +92,7 @@ All production-grade decisions follow the CCR (Critical, Conservative, Recursive
 
 ## Open decisions
 
-- OWL repo structure and client fork workflow
+- OA repo structure and client fork workflow
 - Fork template design (monorepo fork vs selective deployment)
 - Per-client environment schema definition
 - Client onboarding automation level
