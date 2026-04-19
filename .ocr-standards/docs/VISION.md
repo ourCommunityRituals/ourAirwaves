@@ -131,7 +131,7 @@ OW   OurWKRP
        Smart Bar
        Hyde Park Records
 
-OWL  OurWhiteList
+OA   OurAirwaves
      Deployment and white label layer.
      Client workspace fork template.
      Onboarding runbook.
@@ -216,7 +216,7 @@ That is our founding commitment.
 
 ## Open decisions
 
-- OWL repo structure and client fork workflow
+- OA repo structure and client fork workflow
 - OER activation timing and data threshold
 - OSP consulting engagement model formalized
 - Dr. Obia conversation — NCR methodology

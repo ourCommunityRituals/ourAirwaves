@@ -1,4 +1,4 @@
-# OurWhiteList (OWL)
+# OurAirwaves (OA)
 
 Deployment and white label layer for OurCommunityRituals.
 
@@ -6,7 +6,7 @@ Deployment and white label layer for OurCommunityRituals.
 
 ## What this is
 
-Client workspace fork template. Onboarding runbook. Per-client environment schema. When a new corridor or client needs their own instance, OWL is how it gets deployed.
+Client workspace fork template. Onboarding runbook. Per-client environment schema. When a new corridor or client needs their own instance, OA is how it gets deployed.
 
 ---
 
@@ -14,8 +14,8 @@ Client workspace fork template. Onboarding runbook. Per-client environment schem
 
 | Code | Product | Relationship |
 |------|---------|-------------|
-| OSE | OurSharedEvents | OWL forks and deploys OSE for white label clients |
-| OSM | OurSharedMagnets | OSM provides knowledge, OWL provides deployment |
+| OSE | OurSharedEvents | OA forks and deploys OSE for white label clients |
+| OSM | OurSharedMagnets | OSM provides knowledge, OA provides deployment |
 | OW | OurWKRP | White label music tiers: community, DJ/artist, venue |
 | OSG | OurSharedGames | Game format deployable to new corridors |
 | OSR | OurSharedRecords | Archive format deployable to new corridors |
@@ -29,7 +29,7 @@ Client workspace fork template. Onboarding runbook. Per-client environment schem
 | Document | Location | Purpose |
 |----------|----------|---------|
 | CLAUDE.md | `CLAUDE.md` | Session protocol for AI-assisted work |
-| SKILL.md | `SKILL.md` | Reusable skills for OWL work |
+| SKILL.md | `SKILL.md` | Reusable skills for OA work |
 | VISION.md | `OCR-docs/docs/VISION.md` | Org-level source of truth |
 
 ---
