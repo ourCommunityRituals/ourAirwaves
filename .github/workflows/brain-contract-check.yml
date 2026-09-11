@@ -51,6 +51,18 @@ jobs:
       - name: Install deps
         run: pip install pyyaml packaging
 
+      # Invariant #22 — Cross-Repo Import Isolation (OSE-1294 / F13-wide). Runs the
+      # SINGLE canonical brain guard (no per-repo copy). Prohibited sibling scopes
+      # derive from product-registry.yaml; enforcement mode (warn|block) is read
+      # live from the brain's cross_repo_patterns.json — one reviewed brain edit
+      # re-arms/disarms the fleet. OAW is in #22 applies_to at enforcement_mode
+      # warn until it onboards code, so this surfaces findings without blocking.
+      - name: 'Invariant #22 — cross-repo import isolation (canonical brain guard)'
+        working-directory: ${{ github.workspace }}
+        run: |
+          python3 ocr-docs/ocr-docs-brain/scripts/check_cross_repo_imports.py \
+            --repo oaw --product-id oaw --brain ocr-docs/ocr-docs-brain
+
       - name: Run brain test pyramid
         id: brain-pyramid
         working-directory: ocr-docs/ocr-docs-brain
