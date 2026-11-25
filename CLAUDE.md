@@ -72,6 +72,18 @@ OA deploys. OSM documents. OA sets up the client environment, provisions infrast
 
 ---
 
+## Links to other products
+
+Every link that carries data, code or rules between OCR products is listed in OCR-docs `ocr-docs-brain/data-edges.yaml`. **A data link that is not listed there is not allowed.**
+
+- **This repo's data links today:** E3, ourAirwaves to ourEventRings: deployment telemetry only, written in the OER boundary doc, no code yet (`contract_only`).
+- **Shared links every spoke has:** C1 (the hub's design system, pinned in `.ocr-hub-ref`) and G1 (the brain's rules and checks).
+- **Before writing code that sends or reads another product's data:** add the link to `data-edges.yaml` in an OCR-docs PR first, with its privacy class and what enforces it. The field-level rules stay in OCR-docs `docs/architecture/OCR_ARCHITECTURE_oerAggregationBoundary.md`.
+
+Product id in that file: `oaw`.
+
+---
+
 ## DAC compliance
 
 | File | Purpose | Status |
