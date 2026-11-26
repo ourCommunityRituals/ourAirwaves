@@ -1,0 +1,12 @@
+# ourAirwaves: one Worker serves the built React app (static assets) and its
+# own /api routes. Hosting and domain are open owner decisions (CLAUDE.md), so
+# there is no route or deploy here yet: `wrangler dev` for local work only.
+name = "ourairwaves"
+main = "worker/index.ts"
+compatibility_date = "2025-10-01"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+run_worker_first = ["/api/*", "/ui.css"]

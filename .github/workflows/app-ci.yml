@@ -1,0 +1,70 @@
+# App CI: the ourAirwaves React app (app/) on Node 22.
+# Stages @ocr/ui at the hub commit pinned in .ocr-hub-ref, then checks that the
+# rails JSON matches config/, type-checks, runs the tests, builds, and holds the
+# speed budget. Nothing deploys from here: hosting is still an open decision.
+name: App CI
+
+on:
+  pull_request:
+    paths: ['app/**', 'config/**', '.ocr-hub-ref', 'scripts/ci/**', '.github/workflows/app-ci.yml']
+  push:
+    branches: [main]
+    paths: ['app/**', 'config/**', '.ocr-hub-ref', 'scripts/ci/**', '.github/workflows/app-ci.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  app:
+    name: Build and test the app
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout ourAirwaves
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: app/.nvmrc
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Stage @ocr/ui at the pinned hub commit
+        env:
+          OCR_HUB_READ: ${{ secrets.OCR_HUB_READ }}
+        run: scripts/ci/stage-ocr-ui.sh
+
+      - name: Install
+        working-directory: app
+        run: npm ci --no-audit --no-fund
+
+      - name: Rails JSON matches config/airwaves.config.yaml
+        working-directory: app
+        run: npm run rails:check
+
+      - name: Type check
+        working-directory: app
+        run: npm run typecheck
+
+      - name: Tests
+        working-directory: app
+        run: npm test
+
+      - name: Build
+        working-directory: app
+        run: npm run build
+
+      - name: Speed budget (first-visit JavaScript)
+        working-directory: app
+        run: npm run budget
