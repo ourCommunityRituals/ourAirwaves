@@ -1,0 +1,191 @@
+# ============================================================================
+# ourAirwaves (OA) app config: the rails of the self-serve front door
+# ============================================================================
+# One file that says what the OA app is allowed to do, and for whom. The app
+# reads it at start-up; a solution engineer may hand-edit it; every change is a
+# pull request, and `python3 scripts/check-config.py` must pass.
+#
+# Where the rules come from (this file copies none of their wording):
+#   OCR-docs docs/proposals/PROPOSAL_ourAirwaves-self-serve.md  (decided 2026-11-26, D1 to D7)
+#   OCR-docs ocr-docs-brain/data-edges.yaml                     (E11 to E14: the only links OA may use)
+#   OCR-docs ocr-docs-brain/tier-gates.yaml                     (SharedReport features per tier)
+#
+# What this file is NOT:
+#   - a place for secrets. Tokens are named here, never valued; the owner sets
+#     them in the secrets manager.
+#   - a rule book for looks. Each product parses and refuses a skin itself
+#     (OSE lib/layout-skin-md.ts, OW profile layout). OA never holds a rail.
+#   - a client's own settings. Each brand has its own file in config/brands/.
+#
+# Status: the app is not built (order of work, proposal section 8). Values
+# marked `open` are owner decisions not yet made.
+# ============================================================================
+
+schema_version: 1.0.0
+last_reviewed: 2026-11-26
+
+app:
+  id: oaw                       # product id in data-edges.yaml
+  name: ourAirwaves
+  side: named                   # data-edges.yaml node `oaw`
+  hosting: open                 # open decision: where the OA app is hosted
+  domain: open                  # open decision: its domain
+  billing_provider: open        # open decision; until one exists the platform turns paid limits on by hand
+
+# ── Environments ─────────────────────────────────────────────────────────────
+# Staging is the environment of record (owner standing order, 2026-11-14).
+# Production stays closed: OA never calls production until the owner opens it.
+environments:
+  staging:
+    enabled: true
+    ose_base_url: https://stg.oursharedevents.com
+    ow_base_url: https://stg.ourwkrp.com
+  production:
+    enabled: false              # closed (OSE AGENTS.md, production posture, owner 2026-10-12)
+    ose_base_url: https://oursharedevents.com
+    ow_base_url: https://ourwkrp.com
+
+# ── Products OA talks to ─────────────────────────────────────────────────────
+# HTTP APIs only, with a brand-scoped OA service token. Never a product
+# database, never a module import (invariant #22).
+# `token_secret` is the NAME of a secret. The value never appears in any file.
+# `status: planned` means the product has not built the OA-facing route yet
+# (OSE-2233, OW-230); the route listed is the proposal's.
+products:
+  ose:
+    name: ourSharedEvents
+    side: anonymous
+    token_secret: OA_SERVICE_TOKEN_OSE
+    writes_edge: E11
+    reads_edge: E13
+    sends: [brand_id, oa_actor_id, skin_md, limits]   # never a name or an email
+    routes:
+      - { method: GET, path: /api/v2/admin/events/:id/layouts, use: read a look, status: built }
+      - { method: PUT, path: /api/v2/admin/events/:id/layouts, use: write a look, status: built }
+      - { method: GET, path: /api/v2/admin/brand/layouts, use: brand-level looks, status: planned }
+      - { method: PUT, path: /api/v2/admin/brand/layouts, use: brand-level looks, status: planned }
+      - { method: PUT, path: /api/v2/admin/brand/limits, use: write tier limits, status: planned }
+      - { method: GET, path: /api/v2/admin/brand/limits, use: limit use read back, status: planned }
+    surfaces: [report, vote_screen]   # read from OSE lib/layout-skins.ts LAYOUT_SURFACES; OSE is the authority
+  ow:
+    name: ourWKRP
+    side: named
+    token_secret: OA_SERVICE_TOKEN_OW
+    writes_edge: E12
+    reads_edge: E14
+    sends: [brand_id, oa_actor_id, skin_md, limits]
+    routes:
+      - { method: GET, path: /api/profile/layout, use: read a look, status: planned }
+      - { method: PUT, path: /api/profile/layout, use: write a look, status: planned }
+      - { method: PUT, path: /api/brand/limits, use: write tier limits, status: planned }
+      - { method: GET, path: /api/brand/limits, use: limit use read back, status: planned }
+    surfaces: [profile]               # OW is the authority (ourWKRP#139)
+
+# What OA must never send, store or show. The check fails if any of these
+# appears in `sends` above or in a brand file.
+never_crosses:
+  - attendee_name
+  - attendee_email
+  - scan
+  - check_in
+  - vote
+  - registration
+  - email_signup
+  - attendee_count
+  - oa_user_name_to_ose
+  - oa_user_email_to_ose
+
+# ── Accounts (D1) ────────────────────────────────────────────────────────────
+accounts:
+  kind: named                   # a sign-in and the business it acts for, nothing more
+  roles:
+    owner: Billing, people and everything below
+    editor: Looks and layouts
+    viewer: Sees looks, tier and limit use; changes nothing
+  anonymous_attendees_have_accounts: false   # D7: never; they never pay and never get less
+
+# ── Skins (one format, D2) ───────────────────────────────────────────────────
+skins:
+  format: skin_md               # the one format; no other is accepted
+  format_home: ourSharedEvents workers/oursharedevents/src/lib/layout-skin-md.ts
+  max_bytes: 8192               # SKIN_MD_MAX_BYTES in that file
+  layouts_shared_across_surfaces: false   # posters, screens and SharedReports never share a layout
+  editor_step: 1                # 1 = OA opens each product's own editor; 2 = OA's own editor
+
+# ── Tiers (D3 to D5, D7) ─────────────────────────────────────────────────────
+# `null` means no set limit (fair use). Free is generous on purpose.
+# If a product has never heard from OA it uses `free` (D6): generous, never nothing.
+default_tier: free
+
+tiers:
+  free:
+    display_name: Free
+    event:
+      poster_designs_per_brand: 10
+      configuration: [standard_look, ready_made_looks]
+      own_looks_per_surface: 0
+      shared_report_level: 1
+      brands_per_account: 1
+      people_per_brand: 2
+    sponsor:
+      configuration: [standard_sponsor_card]
+      shared_report_level: 1
+      events_with_own_look: 0      # the standard card shows on every event that accepted it, without limit
+    attendee_named:
+      configuration: [standard_look, ready_made_looks]
+      own_looks: 0
+  mid:
+    display_name: Mid
+    event:
+      poster_designs_per_brand: 50
+      configuration: [standard_look, ready_made_looks, custom_arrangements]
+      own_looks_per_surface: 10
+      shared_report_level: 2
+      brands_per_account: 3
+      people_per_brand: 10
+    sponsor:
+      configuration: [standard_sponsor_card, own_sponsor_looks]
+      shared_report_level: 2
+      events_with_own_look: 25     # proposal 6.1 "up to 25 events at once", read as events carrying the sponsor's own look
+    attendee_named:
+      configuration: [standard_look, ready_made_looks, custom_arrangements]
+      own_looks: 10
+  premium:
+    display_name: Premium
+    event:
+      poster_designs_per_brand: null
+      configuration: [standard_look, ready_made_looks, custom_arrangements, look_per_event, one_file_both_products, hand_edits_by_us]
+      own_looks_per_surface: null
+      shared_report_level: 3
+      brands_per_account: null
+      people_per_brand: null
+    sponsor:
+      configuration: [standard_sponsor_card, own_sponsor_looks, sponsor_looks_every_event]
+      shared_report_level: 3
+      events_with_own_look: null
+    attendee_named:
+      configuration: [standard_look, ready_made_looks, custom_arrangements, own_branded_deployment]
+      own_looks: null
+
+# SharedReport levels, mapped to tier-gates.yaml features (that file is the authority).
+shared_report_levels:
+  1: [shared_report_page]
+  2: [shared_report_page, shared_report_pdf, shared_report_interactive, sponsor_views, map_visualization]
+  3: [shared_report_page, shared_report_pdf, shared_report_interactive, sponsor_views, map_visualization, trend_detection, audience_migration, venue_signals, corridor_forecasting]
+
+# Overrides that no tier change can undo (tier-gates.yaml platform_commitments).
+forced_tiers:
+  faith_organization: free      # free indefinitely; the check refuses any price on it
+
+# Never tier-gated, at any level. The check fails if any of these is missing,
+# or if any of them is named as a tier lever above.
+never_tier_gated:
+  - security
+  - audit
+  - isolation
+  - retention
+  - under_5_floor
+  - colours_and_contrast
+  - required_surface_parts
+  - code_plain_titles
+  - uec_colours

@@ -1,0 +1,31 @@
+# ============================================================================
+# One brand's settings in ourAirwaves. Copy this file to config/brands/<brand_id>.yaml.
+# ============================================================================
+# A solution engineer fills this in by hand for a client set up by us; the OA
+# app writes the same shape for a client who signs up alone. It holds the
+# brand's tier and what the brand has chosen, never a person's data: no
+# attendee, no email, no count of people. Account members are listed by an
+# opaque OA actor id, never by name.
+#
+# The rules for what a tier allows are in config/airwaves.config.yaml. A brand
+# file can only choose inside them; `python3 scripts/check-config.py` refuses
+# a brand file that asks for more than its tier gives.
+# ============================================================================
+
+brand_id: example_brand          # the same brand_id OSE and OW use
+corner: event                    # event | sponsor | attendee_named
+products: [ose]                  # ose, ow, or both
+tier: free                       # free | mid | premium
+sponsor_type: standard           # standard | faith_organization (always free)
+
+members:                         # opaque OA actor ids only
+  - { actor: oa_actor_0001, role: owner }
+
+looks:
+  # One skin .md file per brand, kept beside this file. Each product reads the
+  # blocks for its own surfaces and refuses what breaks its rails.
+  skin_file: example_brand.skin.md
+  configuration: [standard_look] # must be within the tier's `configuration`
+
+notes: >
+  Anything a solution engineer wants the next person to know. No personal data.
