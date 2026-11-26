@@ -1,16 +1,22 @@
 # CLAUDE.md — OurAirwaves (OA)
 
-> **Session protocol**: Read this file → Read OCR-docs `docs/VISION.md` → Understand OA's role in the OCR product line → Execute the task.
+> **Session protocol**: Read this file → Read OCR-docs `docs/proposals/PROPOSAL_ourAirwaves-self-serve.md` → Read OCR-docs `docs/OCR_VISION.md` → Execute the task.
 
 ---
 
 ## What this repo is
 
-OurAirwaves is the deployment and white label layer for OurCommunityRituals. Client workspace fork template. Onboarding runbook. Per-client environment schema.
+OurAirwaves is the **self-serve front door** of OurCommunityRituals (owner decision, 2026-11-26).
+A business, sponsor or creator gets one account here and sets up how its pages look on
+ourSharedEvents (OSE) and ourWKRP (OW), inside fixed rails. People expect to take control of their
+own product without waiting; OCR provides the rails.
 
-When a new corridor or client needs their own instance of the OCR platform, OA is how it gets deployed.
+It is also where a full branded deployment (fork, own domain) starts, for the few clients who need one.
 
-This repo is currently documentation-as-code. Deployment templates and runbooks will be added as the white label model is defined.
+The design, and every decision behind it, is OCR-docs `docs/proposals/PROPOSAL_ourAirwaves-self-serve.md`
+(decided 2026-11-26, D1 to D7). Read it before any work here.
+
+This repo has no application code yet. The order of work is in section 8 of that proposal.
 
 ---
 
@@ -20,55 +26,47 @@ This repo is currently documentation-as-code. Deployment templates and runbooks 
 |-------|-------|
 | Code | OA |
 | Full name | OurAirwaves |
-| Type | Deployment and white label |
-| Data model | Client environment schemas, fork templates |
-| Dependencies | OSE (platform source), OSM (franchise knowledge) |
-| Status | Documentation-as-code |
+| Type | Self-serve account and configuration app; deployment and white label |
+| Data model | Named accounts, brands, roles, tiers and limits. Never attendee data. |
+| Dependencies | OSE and OW (their APIs), the hub design system, OSM (franchise knowledge) |
+| Status | Documentation-as-code; app not started |
 
 ---
 
 ## What OA owns
 
-- Client workspace fork template
-- Onboarding runbook for new deployments
-- Per-client environment schema and configuration
-- White label deployment process
-- Client isolation and data separation
-- Environment provisioning (staging, production per client)
+- The business account and sign-in for both products (D1): one account, one or more brands, roles owner / editor / viewer
+- Each brand's tier, and the limits that tier gives (posters, kinds of configuration, SharedReport level)
+- Writing looks and limits to OSE and OW through their APIs, and reading back what is set and how much of each limit is used
+- The front door to the look editors, then its own editor on the same skin .md format (D2)
+- Full branded deployments (fork, custom domain), the old Enterprise path
 
 ## What OA does NOT own
 
-- Platform application code (OSE)
-- Franchise knowledge and documentation (OSM)
-- Game night format (OSG)
-- Music curation (OW)
-- Consulting relationships (OSP)
-- Analytics and intelligence (OER)
+- The rules for a look. Each product parses and refuses a skin itself (OSE `lib/layout-skin-md.ts`, OW profile layout). OA never holds a rail, so it cannot loosen one.
+- Any product database. OA never reads or writes OSE or OW tables directly.
+- Attendee data of any kind: scans, check-ins, votes, registrations, sign-ups, or counts of people
+- Platform application code (OSE), franchise knowledge (OSM), analytics (OER)
 
 ---
 
-## Key distinction
+## Rails that never move
 
-OA deploys. OSM documents. OA sets up the client environment, provisions infrastructure, and manages the fork. OSM provides the knowledge of what to do once it's running.
-
----
-
-## White label tiers (from OW/OSE)
-
-| Tier | Scope | OA responsibility |
-|------|-------|-------------------|
-| Free | Default global flags | No OA involvement — standard platform |
-| Mid | Global overrides, self-serve config | Client environment setup, config management |
-| Enterprise | Event-level overrides, full control | Full fork, custom domain, branded deployment |
+- **APIs, never shared databases.** OA calls OSE and OW over HTTP with a brand-scoped OA service token. No module imports across products (invariant #22 blocks `@ourairwaves/...`).
+- **The anonymous side never learns who the OA user is.** OSE receives a brand id, the service token and an opaque OA actor id. Never a name or an email.
+- **Anonymous attendees never have an OA account and never pay** (D7). Attendee tiers apply only to named profiles on OW.
+- **Never tier-gated:** security, audit, isolation and retention; the under-5 floor ("Fewer than 5"); colours and contrast (design tokens); the required parts of each surface; plain titles and UEC colours on every code.
+- **Each product enforces its own limits** (D6). With no word from OA, a product uses the Free limits: generous, never nothing.
+- **One skin format.** The skin .md format is the only one. Layouts never carry across surfaces; only the abstraction does.
 
 ---
 
-## Architectural boundaries
+## Tiers (decided 2026-11-26, D3 to D5 and D7)
 
-- **OSE is the source.** OA forks and deploys OSE, does not modify the core platform.
-- **Client data isolation is non-negotiable.** Each client deployment has its own data boundary.
-- **OSM provides the runbook content.** OA executes the deployment; OSM provides the operational knowledge.
-- **White label branding lives at the deployment layer.** Custom domains, colors, logos — OA manages these per client.
+Free is generous on purpose, to get businesses running. Fees unlock more posters, more kinds of
+configuration and higher SharedReport levels, for every corner of the Triangle. The numbers and the
+sponsor and attendee rows are in section 6 of the proposal; `OCR-docs ocr-docs-brain/tier-gates.yaml`
+holds the SharedReport features per tier.
 
 ---
 
@@ -76,7 +74,7 @@ OA deploys. OSM documents. OA sets up the client environment, provisions infrast
 
 Every link that carries data, code or rules between OCR products is listed in OCR-docs `ocr-docs-brain/data-edges.yaml`. **A data link that is not listed there is not allowed.**
 
-- **This repo's data links today:** E3, ourAirwaves to ourEventRings: deployment telemetry only, written in the OER boundary doc, no code yet (`contract_only`).
+- **This repo's data links today:** E3, ourAirwaves to ourEventRings: deployment telemetry only (`contract_only`). E11 and E12, ourAirwaves to OSE and to OW: looks and tier limits. E13 and E14, OSE and OW back to ourAirwaves: current looks and limit use, never people. E11 to E14 are `decided`, not built.
 - **Shared links every spoke has:** C1 (the hub's design system, pinned in `.ocr-hub-ref`) and G1 (the brain's rules and checks).
 - **Before writing code that sends or reads another product's data:** add the link to `data-edges.yaml` in an OCR-docs PR first, with its privacy class and what enforces it. The field-level rules stay in OCR-docs `docs/architecture/OCR_ARCHITECTURE_oerAggregationBoundary.md`.
 
@@ -92,7 +90,7 @@ Product id in that file: `oaw`.
 | README.md | Public-facing description | Present |
 | SKILL.md | Reusable skills | Present |
 
-Vision lives in OCR-docs `docs/VISION.md` only.
+Vision lives in OCR-docs `docs/OCR_VISION.md` only.
 
 ---
 
@@ -104,14 +102,13 @@ All production-grade decisions follow the CCR (Critical, Conservative, Recursive
 
 ## Open decisions
 
-- OA repo structure and client fork workflow
-- Fork template design (monorepo fork vs selective deployment)
-- Per-client environment schema definition
-- Client onboarding automation level
+- Where the OA app is hosted and its domain
+- Billing provider (no billing exists yet; paid limits are turned on by the platform until it does)
+- Fork template design for full branded deployments
 
 ---
 
-*Derived from OCR-docs/docs/VISION.md*
-*Last updated: April 5 2026*
+*Derived from OCR-docs/docs/OCR_VISION.md and the self-serve proposal*
+*Last updated: November 26 2026 (self-serve front door, owner decision)*
 *Owner: Matt*
 *Status: ACTIVE*
