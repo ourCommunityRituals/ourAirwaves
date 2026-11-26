@@ -60,3 +60,48 @@ describe('ourAirwaves app', () => {
     expect(current.getAttribute('href')).toBe('/plans');
   });
 });
+
+describe('how much help', () => {
+  const atLevel = (path: string, help: 'guided' | 'standard' | 'full') =>
+    render(
+      <MemoryRouter initialEntries={[path]}>
+        <App help={help} />
+      </MemoryRouter>,
+    );
+
+  it('guided shows one next step and hides the full list', () => {
+    atLevel('/', 'guided');
+    expect(screen.getByTestId('guided-step')).toBeTruthy();
+    expect(screen.queryByTestId('action-set_look')).toBeNull();
+    expect(screen.getByTestId('home-cta').getAttribute('href')).toBe('/plans');
+  });
+
+  it('standard shows every action but not the data links', () => {
+    atLevel('/', 'standard');
+    for (const a of ACTIONS) expect(screen.getByTestId(`action-${a.id}`)).toBeTruthy();
+    expect(screen.queryByTestId('data-links')).toBeNull();
+  });
+
+  it('full control adds the actions and rules as data', () => {
+    atLevel('/', 'full');
+    const links = within(screen.getByTestId('data-links')).getAllByRole('link');
+    expect(links.map((l) => l.getAttribute('href'))).toEqual(['/api/actions', '/api/rails']);
+  });
+
+  it('full control shows what each SharedReport level includes', () => {
+    atLevel('/plans', 'full');
+    expect(screen.getByTestId('report-features-free').textContent).toContain('Report page');
+    expect(screen.getByTestId('report-features-premium').textContent).toContain('Corridor forecasts');
+  });
+
+  it('the choice is made on the account screen and remembered', () => {
+    window.localStorage.clear();
+    at('/account');
+    fireEvent.click(screen.getByLabelText(/^Guide me/));
+    expect(window.localStorage.getItem('oa.help')).toBe('guided');
+    cleanup();
+    at('/');
+    expect(screen.getByTestId('guided-step')).toBeTruthy();
+    window.localStorage.clear();
+  });
+});

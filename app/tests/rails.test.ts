@@ -10,7 +10,7 @@ describe('rails in the app', () => {
   });
 
   it('every id shown on screen has plain words', () => {
-    const ids = new Set<string>(rails.never_tier_gated);
+    const ids = new Set<string>([...rails.never_tier_gated, ...Object.values(rails.shared_report_levels).flat()]);
     for (const t of rails.tiers) {
       for (const corner of [t.event, t.sponsor, t.attendee_named]) {
         for (const [k, v] of Object.entries(corner)) {

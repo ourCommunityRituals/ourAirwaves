@@ -6,6 +6,7 @@ import { Plans } from './routes/Plans';
 import { Looks } from './routes/Looks';
 import { Account } from './routes/Account';
 import { NotFound } from './routes/NotFound';
+import { HelpProvider, type HelpLevel } from './help';
 
 const NAV = [
   { href: '/', label: 'Home', icon: '⌂' },
@@ -14,8 +15,9 @@ const NAV = [
   { href: '/account', label: 'Account', icon: '○' },
 ];
 
-export function App() {
+export function App({ help }: { help?: HelpLevel } = {}) {
   return (
+    <HelpProvider initial={help}>
     <Shell>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -25,6 +27,7 @@ export function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Shell>
+    </HelpProvider>
   );
 }
 

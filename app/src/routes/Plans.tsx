@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Card, Header } from '@ocr/ui/react';
 import { ON_ACCENT } from '../ui';
+import { useHelp } from '../help';
 import { CORNERS, type Corner, formatLimit, rails, words } from '../rails';
 
 export function Plans() {
   const [corner, setCorner] = useState<Corner>('event');
+  const { level } = useHelp();
   return (
     <>
       <Header title="Plans" data-testid="plans-header" />
@@ -43,6 +45,16 @@ export function Plans() {
                   </dd>
                 </div>
               ))}
+              {level === 'full' && (
+                <div data-testid={`report-features-${t.id}`}>
+                  <dt className="text-text-muted">SharedReport includes</dt>
+                  <dd className="m-0">
+                    {(rails.shared_report_levels[String(t[corner].shared_report_level ?? '')] ?? [])
+                      .map(words)
+                      .join(', ') || 'Not part of this plan'}
+                  </dd>
+                </div>
+              )}
             </dl>
           </Card>
         ))}

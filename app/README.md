@@ -22,6 +22,10 @@ pages and the app's own `/api`. Design and decisions: OCR-docs
 - `src/actions.ts` lists everything a person can do here. Screens render from it and the
   Worker serves it at `GET /api/actions`, so a helper or an assistant can see what the app
   can do without reading pages. Add the action first, then its screen.
+- `src/help.tsx` sets how much help a person gets: Guide me (one step at a time, in the
+  order of the action list), Standard, or Full control (all detail, plus the actions and
+  rules as data). It changes what the screens show, never what is allowed. It is kept on
+  the device until accounts exist.
 - `worker/index.ts` serves `/api/health`, `/api/rails`, `/api/actions` and `/ui.css`, and
   hands every other path to the built app.
 - `public/_headers` sets the response headers for every page.
