@@ -39,6 +39,7 @@ Design and decisions: OCR-docs `docs/proposals/PROPOSAL_ourAirwaves-self-serve.m
 | SKILL.md | `SKILL.md` | Reusable skills for OA work |
 | OCR_VISION.md | `OCR-docs/docs/OCR_VISION.md` | Org-level source of truth |
 | Self-serve design | `OCR-docs/docs/proposals/PROPOSAL_ourAirwaves-self-serve.md` | OA's role, accounts, tiers, links |
+| App config | `config/airwaves.config.yaml` | The rails in one checked file: products, links, tiers and limits; brand files in `config/brands/` |
 
 ---
 
