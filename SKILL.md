@@ -4,6 +4,21 @@ Skills for working in the OurAirwaves repo.
 
 ---
 
+## Skill: Self-Serve Change
+
+### When to Use
+User says: "self-serve", "account", "tier", "limits", "look editor", "skins", "front door"
+
+### Steps
+1. Read OCR-docs `docs/proposals/PROPOSAL_ourAirwaves-self-serve.md` (decided 2026-11-26).
+2. If the change sends or reads OSE or OW data, check it fits E11 to E14 in OCR-docs `ocr-docs-brain/data-edges.yaml`. If it does not, add or change the edge in an OCR-docs PR first.
+3. Call the product API; never a product database, never a module import.
+4. Keep every rule in the product: OA shows the product's refusal message, it never re-checks a look itself.
+5. Never send a name or email to OSE; never read attendee data or counts.
+6. Check the never-tier-gated list in `CLAUDE.md` before adding any limit.
+
+---
+
 ## Skill: Client Fork Setup
 
 ### When to Use
