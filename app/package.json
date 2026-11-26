@@ -1,0 +1,42 @@
+{
+  "name": "ourairwaves-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "ourAirwaves: the self-serve front door, a React app served by one Cloudflare Worker.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "rails": "node scripts/build-rails.mjs",
+    "rails:check": "node scripts/build-rails.mjs --check",
+    "dev": "vite",
+    "dev:worker": "wrangler dev",
+    "build": "vite build",
+    "budget": "node scripts/check-budget.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "ci": "npm run rails:check && npm run typecheck && npm test && npm run build && npm run budget"
+  },
+  "dependencies": {
+    "@ocr/ui": "file:../../packages/ui",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-router": "7.9.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "4.20251014.0",
+    "@testing-library/react": "16.3.0",
+    "@types/node": "22.18.11",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "@vitejs/plugin-react": "5.0.4",
+    "jsdom": "27.0.1",
+    "tailwindcss": "3.4.18",
+    "typescript": "5.9.3",
+    "vite": "7.1.10",
+    "vitest": "3.2.4",
+    "wrangler": "4.43.0",
+    "yaml": "2.8.1"
+  }
+}

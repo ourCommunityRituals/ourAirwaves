@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.0.0",
+  "source": "config/airwaves.config.yaml",
+  "products": [
+    {
+      "id": "ose",
+      "name": "ourSharedEvents",
+      "side": "anonymous",
+      "surfaces": [
+        "report",
+        "vote_screen"
+      ]
+    },
+    {
+      "id": "ow",
+      "name": "ourWKRP",
+      "side": "named",
+      "surfaces": [
+        "profile"
+      ]
+    }
+  ],
+  "tiers": [
+    {
+      "id": "free",
+      "name": "Free",
+      "event": {
+        "poster_designs_per_brand": 10,
+        "configuration": [
+          "standard_look",
+          "ready_made_looks"
+        ],
+        "own_looks_per_surface": 0,
+        "shared_report_level": 1,
+        "brands_per_account": 1,
+        "people_per_brand": 2
+      },
+      "sponsor": {
+        "configuration": [
+          "standard_sponsor_card"
+        ],
+        "shared_report_level": 1,
+        "events_with_own_look": 0
+      },
+      "attendee_named": {
+        "configuration": [
+          "standard_look",
+          "ready_made_looks"
+        ],
+        "own_looks": 0
+      }
+    },
+    {
+      "id": "mid",
+      "name": "Mid",
+      "event": {
+        "poster_designs_per_brand": 50,
+        "configuration": [
+          "standard_look",
+          "ready_made_looks",
+          "custom_arrangements"
+        ],
+        "own_looks_per_surface": 10,
+        "shared_report_level": 2,
+        "brands_per_account": 3,
+        "people_per_brand": 10
+      },
+      "sponsor": {
+        "configuration": [
+          "standard_sponsor_card",
+          "own_sponsor_looks"
+        ],
+        "shared_report_level": 2,
+        "events_with_own_look": 25
+      },
+      "attendee_named": {
+        "configuration": [
+          "standard_look",
+          "ready_made_looks",
+          "custom_arrangements"
+        ],
+        "own_looks": 10
+      }
+    },
+    {
+      "id": "premium",
+      "name": "Premium",
+      "event": {
+        "poster_designs_per_brand": null,
+        "configuration": [
+          "standard_look",
+          "ready_made_looks",
+          "custom_arrangements",
+          "look_per_event",
+          "one_file_both_products",
+          "hand_edits_by_us"
+        ],
+        "own_looks_per_surface": null,
+        "shared_report_level": 3,
+        "brands_per_account": null,
+        "people_per_brand": null
+      },
+      "sponsor": {
+        "configuration": [
+          "standard_sponsor_card",
+          "own_sponsor_looks",
+          "sponsor_looks_every_event"
+        ],
+        "shared_report_level": 3,
+        "events_with_own_look": null
+      },
+      "attendee_named": {
+        "configuration": [
+          "standard_look",
+          "ready_made_looks",
+          "custom_arrangements",
+          "own_branded_deployment"
+        ],
+        "own_looks": null
+      }
+    }
+  ],
+  "shared_report_levels": {
+    "1": [
+      "shared_report_page"
+    ],
+    "2": [
+      "shared_report_page",
+      "shared_report_pdf",
+      "shared_report_interactive",
+      "sponsor_views",
+      "map_visualization"
+    ],
+    "3": [
+      "shared_report_page",
+      "shared_report_pdf",
+      "shared_report_interactive",
+      "sponsor_views",
+      "map_visualization",
+      "trend_detection",
+      "audience_migration",
+      "venue_signals",
+      "corridor_forecasting"
+    ]
+  },
+  "never_tier_gated": [
+    "security",
+    "audit",
+    "isolation",
+    "retention",
+    "under_5_floor",
+    "colours_and_contrast",
+    "required_surface_parts",
+    "code_plain_titles",
+    "uec_colours"
+  ]
+}
