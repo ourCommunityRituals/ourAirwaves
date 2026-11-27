@@ -16,7 +16,7 @@ It is also where a full branded deployment (fork, own domain) starts, for the fe
 The design, and every decision behind it, is OCR-docs `docs/proposals/PROPOSAL_ourAirwaves-self-serve.md`
 (decided 2026-11-26, D1 to D7). Read it before any work here.
 
-This repo has no application code yet. The order of work is in section 8 of that proposal.
+The app shell is in `app/` (React and Vite with a Cloudflare Worker, PR 58, 26 Nov 2026) and the app's config is in `config/` (PR 55). It is not hosted yet and does not call ourSharedEvents or ourWKRP yet. The order of work is in section 8 of that proposal.
 
 ---
 
@@ -29,7 +29,7 @@ This repo has no application code yet. The order of work is in section 8 of that
 | Type | Self-serve account and configuration app; deployment and white label |
 | Data model | Named accounts, brands, roles, tiers and limits. Never attendee data. |
 | Dependencies | OSE and OW (their APIs), the hub design system, OSM (franchise knowledge) |
-| Status | Documentation-as-code; app not started |
+| Status | App shell on main (`app/`), not hosted yet; no API calls to OSE or OW yet |
 
 ---
 
